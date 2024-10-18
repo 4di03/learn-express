@@ -32,7 +32,7 @@ const addMsgToRequest = (req: UserRequest, res: Response, next: NextFunction) =>
   if (users) {
     req.users = users;
     next();
-  } else {
+} else {
     return res.json({
       error: { message: 'users not found', status: 404 }
     });
@@ -42,11 +42,26 @@ const addMsgToRequest = (req: UserRequest, res: Response, next: NextFunction) =>
 app.use(cors({ origin: 'http://localhost:3000' }));
 app.use('/read/usernames', addMsgToRequest);
 
-app.get('/read/usernames', (req: UserRequest, res: Response) => {
-  let usernames = req.users?.map((user) => {
-    return { id: user.id, username: user.username };
+app.get('/usernames', (req: UserRequest, res: Response) => {
+  let usernames = req.users?.map(function(user) {
+      return {id: user.id, username: user.username};
   });
   res.send(usernames);
+});
+
+app.get('/read/usernames:name', (req: UserRequest, res: Response) => {
+  const name = req.params.name;
+  let usernames = req.users?.filter(user => user.username == name).map((user) => {
+      return { id: user.id, username: user.username };
+  });
+
+  if (usernames?.length === 0) {
+      res.send({
+          error: { message: 'user not found', status: 404 }
+      });
+  }else{
+      res.send(usernames);
+  }
 });
 
 app.use(express.json());
