@@ -5,7 +5,7 @@ import { UserRequest, User } from './types';
 const router = express.Router()
 
 const dataFile = '../data/users.json';
-router.post('/write/adduser', (req: UserRequest, res: Response) => {
+router.post('/adduser', (req: UserRequest, res: Response) => {
   let newuser = req.body as User;
   req.users?.push(newuser);
   fs.writeFile(path.resolve(__dirname, dataFile), JSON.stringify(req.users), (err) => {

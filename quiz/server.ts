@@ -18,7 +18,7 @@ interface UserRequest extends Request {
 const app: Express = express();
 const port: number = 8000;
 
-const dataFile = './data/users.json';
+const dataFile = '../data/users.json';
 
 let users: User[];
 
@@ -42,17 +42,18 @@ const addMsgToRequest = (req: UserRequest, res: Response, next: NextFunction) =>
 app.use(cors({ origin: 'http://localhost:3000' }));
 app.use('/read/usernames', addMsgToRequest);
 
-app.get('/usernames', (req: UserRequest, res: Response) => {
+app.get('/read/usernames', (req: UserRequest, res: Response) => {
   let usernames = req.users?.map(function(user) {
-      return {id: user.id, username: user.username};
+      return {id: user.id, username: user.username, email: user.email};
   });
   res.send(usernames);
 });
 
-app.get('/read/usernames:name', (req: UserRequest, res: Response) => {
+app.get('/read/usernames/:name', (req: UserRequest, res: Response) => {
+  console.log("L53")
   const name = req.params.name;
   let usernames = req.users?.filter(user => user.username == name).map((user) => {
-      return { id: user.id, username: user.username };
+      return { id: user.id, username: user.username, email: user.email };
   });
 
   if (usernames?.length === 0) {
